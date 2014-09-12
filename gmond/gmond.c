@@ -935,10 +935,11 @@ setup_listen_channels_pollset( void )
 
 void sanitize_metric_name(char *metric_name, int is_spoof_msg)
 {
+    int name_len;
     if (metric_name == NULL) return;
-    if (strlen(metric_name) < 1) return;
+    if ((name_len = strlen(metric_name)) < 1) return;
     char *p = metric_name;
-    while (p < (metric_name + strlen(metric_name))) {
+    while (p < (metric_name + name_len)) {
         if (
                !(*p >= 'A' && *p <= 'Z')
             && !(*p >= 'a' && *p <= 'z')
@@ -946,8 +947,8 @@ void sanitize_metric_name(char *metric_name, int is_spoof_msg)
             && (*p != '_')
             && (*p != '-')
             && (*p != '.')
-            && (*p == ':' && !is_spoof_msg)
             && (*p != '\0')
+            && !(*p == ':' && is_spoof_msg)
            ) {
             *p = '_';
         }
